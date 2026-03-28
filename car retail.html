@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AutoElite — Drive Your Dream</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+:root{--red:#E8222A;--gold:#C9A84C;--dark:#0A0A0A;--darker:#050505;--mid:#141414;--card:#111111;--text:#F0EDE8;--muted:#888;--border:rgba(201,168,76,0.2);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--darker);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{position:fixed;width:12px;height:12px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(5,5,5,0.97),transparent);backdrop-filter:blur(4px);border-bottom:1px solid rgba(201,168,76,0.08);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.1em;color:var(--text);text-decoration:none;}
+.logo span{color:var(--red);}
+nav ul{list-style:none;display:flex;gap:2rem;align-items:center;}
+nav ul li a{color:var(--muted);text-decoration:none;font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.3s;}
+nav ul li a:hover{color:var(--gold);}
+.nav-cta{background:var(--red)!important;color:#fff!important;padding:0.55rem 1.4rem;border-radius:2px;font-size:0.72rem!important;}
+.nav-cta:hover{background:#b01820!important;}
+
+/* HERO */
+#hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-bg-img{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&q=80') center/cover no-repeat;filter:brightness(0.22) saturate(0.5);}
+.hero-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 70%,rgba(232,34,42,0.12),transparent 65%),linear-gradient(to bottom,rgba(5,5,5,0.4),rgba(5,5,5,0.82));}
+.grid-lines{position:absolute;inset:0;opacity:0.05;}
+.grid-lines::before{content:'';position:absolute;inset:0;background-image:linear-gradient(to right,var(--gold) 1px,transparent 1px),linear-gradient(to bottom,var(--gold) 1px,transparent 1px);background-size:80px 80px;animation:gridMove 20s linear infinite;}
+@keyframes gridMove{to{transform:translateY(80px);}}
+.ring-deco{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:460px;height:460px;border-radius:50%;border:1px solid rgba(201,168,76,0.1);animation:spinRing 30s linear infinite;pointer-events:none;}
+.ring-deco::after{content:'';position:absolute;inset:28px;border-radius:50%;border:1px dashed rgba(232,34,42,0.12);}
+@keyframes spinRing{to{transform:translateY(-50%) rotate(360deg);}}
+.hero-content{position:relative;z-index:2;text-align:center;}
+.hero-tag{display:inline-block;font-size:0.68rem;font-weight:600;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);border:1px solid var(--border);padding:0.4rem 1.2rem;margin-bottom:2rem;animation:fadeUp 1s ease both 0.2s;}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,13vw,13rem);line-height:0.88;letter-spacing:0.02em;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,0.45));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp 1s ease both 0.4s;}
+.hero-headline em{font-style:italic;font-family:'Barlow',sans-serif;font-weight:300;font-size:0.32em;-webkit-text-fill-color:var(--red);display:block;letter-spacing:0.04em;margin-top:-0.3rem;}
+.hero-sub{font-size:1rem;color:var(--muted);font-weight:300;margin-top:2rem;letter-spacing:0.06em;max-width:480px;margin-left:auto;margin-right:auto;animation:fadeUp 1s ease both 0.6s;}
+.hero-actions{margin-top:3rem;display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 1s ease both 0.8s;}
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;color:var(--muted);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;animation:fadeUp 1s ease both 1.2s;}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:0.5rem;background:var(--red);color:#fff;padding:0.9rem 2.2rem;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;cursor:none;transition:all 0.3s;text-decoration:none;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.btn-primary:hover{background:#b81920;transform:translateY(-3px);box-shadow:0 12px 30px rgba(232,34,42,0.35);}
+.btn-ghost{display:inline-flex;align-items:center;gap:0.5rem;background:transparent;color:var(--text);padding:0.9rem 2.2rem;border:1px solid rgba(255,255,255,0.2);font-family:'Barlow',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;cursor:none;transition:all 0.3s;text-decoration:none;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px);}
+.btn-gold{display:inline-flex;align-items:center;gap:0.5rem;background:var(--gold);color:#000;padding:0.9rem 2.2rem;border:none;font-family:'Barlow',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;cursor:none;transition:all 0.3s;text-decoration:none;}
+.btn-gold:hover{background:#b8942a;transform:translateY(-3px);}
+.btn-sm{padding:0.55rem 1.2rem!important;font-size:0.68rem!important;}
+
+/* STATS */
+.stats-bar{background:var(--mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:space-around;padding:1.8rem 4rem;}
+.stat{text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);line-height:1;}
+.stat-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem;}
+
+/* SECTION HEADERS */
+.section-header{text-align:center;padding:5rem 2rem 2.5rem;}
+.section-tag{font-size:0.62rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;display:block;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5.5rem);letter-spacing:0.04em;background:linear-gradient(135deg,#fff 40%,rgba(255,255,255,0.38));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.red-line{width:48px;height:3px;background:var(--red);margin:1rem auto;}
+.red-line.left{margin-left:0;}
+
+/* FILTER */
+.filter-bar{display:flex;justify-content:center;gap:0.6rem;flex-wrap:wrap;padding:0 2rem 2.5rem;}
+.filter-btn{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1);padding:0.5rem 1.4rem;font-family:'Barlow',sans-serif;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;cursor:none;transition:all 0.25s;}
+.filter-btn:hover,.filter-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* CATEGORIES */
+.categories{padding:0 3rem 5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.cat-card{position:relative;overflow:hidden;border:1px solid var(--border);background:var(--card);border-radius:3px;cursor:none;transition:border-color 0.4s,transform 0.4s,opacity 0.3s;}
+.cat-card:hover{border-color:var(--gold);transform:translateY(-6px);}
+.cat-card.wide{grid-column:span 2;}
+.cat-img-wrap{position:relative;overflow:hidden;aspect-ratio:16/9;}
+.cat-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.5s;filter:brightness(0.65) saturate(0.8);}
+.cat-card:hover .cat-img-wrap img{transform:scale(1.08);filter:brightness(0.45) saturate(0.6);}
+.cat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,5,0.92) 0%,transparent 55%);}
+.cat-badge{position:absolute;top:1rem;left:1rem;background:var(--red);color:#fff;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.25rem 0.7rem;font-weight:700;}
+.cat-info{padding:1.4rem;}
+.cat-label{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:0.06em;line-height:1;transition:color 0.3s;}
+.cat-card:hover .cat-label{color:var(--gold);}
+.cat-desc{font-size:0.78rem;color:var(--muted);margin-top:0.4rem;font-weight:300;line-height:1.6;}
+.cat-footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);}
+.cat-num{font-size:0.68rem;color:var(--gold);letter-spacing:0.08em;}
+.cat-btn{background:var(--red);color:#fff;border:none;padding:0.45rem 1.1rem;font-family:'Barlow',sans-serif;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:600;cursor:none;transition:all 0.25s;}
+.cat-btn:hover{background:#b81920;}
+
+/* FEATURED */
+#featured{background:var(--mid);padding-bottom:5rem;}
+.featured-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin:0 3rem;}
+.feat-card{background:var(--mid);padding:1.6rem;cursor:none;transition:background 0.3s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform 0.4s;}
+.feat-card:hover::before{transform:scaleX(1);}
+.feat-card:hover{background:#1c1c1c;}
+.feat-img-wrap{position:relative;overflow:hidden;aspect-ratio:16/10;margin-bottom:1.1rem;}
+.feat-img{width:100%;height:100%;object-fit:cover;filter:brightness(0.8);transition:transform 0.5s,filter 0.4s;}
+.feat-card:hover .feat-img{transform:scale(1.05);filter:brightness(0.95);}
+.feat-tag{position:absolute;top:0.6rem;right:0.6rem;background:rgba(0,0,0,0.8);border:1px solid var(--border);color:var(--gold);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.2rem 0.6rem;}
+.feat-brand{font-size:0.6rem;color:var(--red);letter-spacing:0.25em;text-transform:uppercase;}
+.feat-name{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:0.05em;margin-top:0.2rem;}
+.feat-price{color:var(--gold);font-weight:700;font-size:0.92rem;margin-top:0.4rem;}
+.feat-specs{display:flex;gap:0.8rem;margin-top:0.8rem;padding-top:0.8rem;border-top:1px solid rgba(255,255,255,0.06);}
+.feat-spec{font-size:0.62rem;color:var(--muted);}
+.feat-spec strong{color:var(--text);display:block;font-size:0.72rem;}
+.feat-actions{display:flex;gap:0.5rem;margin-top:1rem;}
+.feat-actions button{flex:1;padding:0.5rem;font-family:'Barlow',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;cursor:none;transition:all 0.25s;border:none;}
+.btn-view-det{background:transparent;border:1px solid rgba(255,255,255,0.12)!important;color:var(--muted);}
+.btn-view-det:hover{border-color:var(--gold)!important;color:var(--gold);}
+.btn-buy-now{background:var(--red);color:#fff;}
+.btn-buy-now:hover{background:#b81920;}
+
+/* TESTIMONIALS */
+#testimonials{padding:0 3rem 5rem;}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem;}
+.testi-card{background:var(--card);border:1px solid var(--border);padding:2rem;transition:border-color 0.3s;}
+.testi-card:hover{border-color:var(--gold);}
+.stars{color:var(--gold);font-size:0.8rem;margin-bottom:0.6rem;}
+.testi-quote{font-size:2.5rem;color:var(--red);line-height:1;font-family:'Bebas Neue',sans-serif;margin-bottom:0.6rem;}
+.testi-text{font-size:0.85rem;color:var(--muted);line-height:1.7;font-weight:300;font-style:italic;}
+.testi-author{margin-top:1.5rem;display:flex;align-items:center;gap:0.8rem;}
+.testi-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--red);}
+.testi-name{font-size:0.78rem;font-weight:600;}
+.testi-car{font-size:0.66rem;color:var(--gold);}
+
+/* EXPERIENCE */
+.experience-strip{padding:5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.exp-text .section-header{text-align:left;padding:0 0 1.5rem;}
+.exp-text p{color:var(--muted);font-size:0.95rem;line-height:1.8;font-weight:300;max-width:460px;}
+.exp-features{margin-top:2rem;display:flex;flex-direction:column;gap:1rem;}
+.exp-feat{display:flex;gap:1rem;align-items:flex-start;padding:1rem;border:1px solid var(--border);transition:border-color 0.3s,background 0.3s;cursor:none;}
+.exp-feat:hover{border-color:var(--gold);background:rgba(201,168,76,0.03);}
+.exp-icon{width:40px;height:40px;background:rgba(232,34,42,0.1);border:1px solid rgba(232,34,42,0.3);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.exp-feat-text strong{display:block;font-size:0.82rem;font-weight:700;margin-bottom:0.2rem;}
+.exp-feat-text span{font-size:0.74rem;color:var(--muted);}
+.exp-actions{display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;}
+.exp-visual{position:relative;}
+.exp-img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:brightness(0.7);}
+.exp-img-deco{position:absolute;top:-1.5rem;right:-1.5rem;width:100%;height:100%;border:1px solid var(--border);z-index:-1;}
+.exp-badge{position:absolute;bottom:2rem;left:-2rem;background:var(--dark);border:1px solid var(--border);padding:1.2rem 1.5rem;}
+.exp-badge-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--red);line-height:1;}
+.exp-badge-txt{font-size:0.62rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;}
+
+/* BRANDS */
+#brands{background:var(--mid);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2.5rem 0;overflow:hidden;}
+.brands-track{display:flex;gap:4rem;align-items:center;animation:marquee 22s linear infinite;white-space:nowrap;}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.15em;color:var(--muted);flex-shrink:0;}
+.brand-sep{color:var(--border);flex-shrink:0;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* CTA BANNER */
+#cta-banner{position:relative;overflow:hidden;}
+.cta-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=1400&q=80') center/cover no-repeat;filter:brightness(0.15) saturate(0.4);}
+.cta-content{position:relative;z-index:2;text-align:center;padding:6rem 2rem;}
+.cta-content h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,7vw,7rem);letter-spacing:0.04em;background:linear-gradient(135deg,#fff,rgba(255,255,255,0.5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cta-content p{color:var(--muted);font-size:1rem;font-weight:300;margin:1.5rem auto;max-width:500px;letter-spacing:0.04em;}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2.5rem;}
+
+/* FOOTER */
+footer{background:var(--darker);border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;}
+.footer-logo span{color:var(--red);}
+.footer-tagline{color:var(--muted);font-size:0.82rem;margin-top:0.6rem;line-height:1.7;max-width:220px;}
+.footer-col h4{font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
+.footer-col ul li a{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:300;transition:color 0.3s;cursor:none;}
+.footer-col ul li a:hover{color:var(--text);}
+.footer-bottom{background:var(--darker);border-top:1px solid var(--border);padding:1.4rem 3rem;display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--muted);}
+.social-links{display:flex;gap:0.8rem;margin-top:1.2rem;}
+.social-btn{width:34px;height:34px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.85rem;text-decoration:none;color:var(--muted);transition:all 0.3s;cursor:none;}
+.social-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:5000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:2rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);width:100%;max-width:680px;max-height:88vh;overflow-y:auto;position:relative;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:none;transition:color 0.3s;z-index:10;line-height:1;}
+.modal-close:hover{color:var(--red);}
+.modal-img{width:100%;aspect-ratio:16/9;object-fit:cover;filter:brightness(0.85);}
+.modal-body{padding:2rem;}
+.modal-brand{font-size:0.65rem;color:var(--red);letter-spacing:0.25em;text-transform:uppercase;}
+.modal-name{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:0.05em;margin-top:0.2rem;line-height:1;}
+.modal-price{color:var(--gold);font-size:1.1rem;font-weight:700;margin-top:0.4rem;}
+.modal-desc{color:var(--muted);font-size:0.86rem;line-height:1.7;margin-top:1rem;font-weight:300;}
+.modal-specs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin:1.5rem 0;}
+.modal-spec{background:var(--mid);padding:1rem;text-align:center;}
+.modal-spec strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);letter-spacing:0.05em;}
+.modal-spec span{font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;}
+.modal-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1.5rem;}
+.field-label{font-size:0.65rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:0.4rem;}
+.field-input{width:100%;background:var(--mid);border:1px solid var(--border);color:var(--text);padding:0.7rem 1rem;font-family:'Barlow',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.3s;}
+.field-input:focus{border-color:var(--gold);}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--gold);border-left:4px solid var(--red);color:var(--text);padding:1rem 1.5rem;font-size:0.82rem;z-index:6000;transform:translateY(120px);transition:transform 0.4s;max-width:320px;}
+.toast.show{transform:translateY(0);}
+
+/* NOISE */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:0.02;pointer-events:none;z-index:9990;}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#hero" class="logo">Auto<span>Elite</span></a>
+  <ul>
+    <li><a href="#categories">Models</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#experience">About</a></li>
+    <li><a href="#" class="nav-cta" onclick="openModal('testdrive');return false;">Book Test Drive</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-gradient"></div>
+  <div class="grid-lines"></div>
+  <div class="ring-deco"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ India's Premier Automotive Destination ✦</div>
+    <h1 class="hero-headline">DRIVE YOUR<br>DREAM<em>Since 2001 &nbsp;·&nbsp; 500+ Models Available</em></h1>
+    <p class="hero-sub">Find the car that moves you. Luxury, performance, and family comfort — all under one roof.</p>
+    <div class="hero-actions">
+      <a href="#categories" class="btn-primary">&#9654; Explore Collection</a>
+      <a href="#" class="btn-ghost" onclick="openModal('testdrive');return false;">&#9711; Book Test Drive</a>
+      <a href="#" class="btn-gold btn-sm" onclick="openModal('finance');return false;">EMI Calculator</a>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll to explore</div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" data-target="500" data-suffix="+">500+</div><div class="stat-label">Cars in Stock</div></div>
+  <div class="stat"><div class="stat-num" data-target="12" data-suffix="K+">12K+</div><div class="stat-label">Happy Customers</div></div>
+  <div class="stat"><div class="stat-num" data-target="24" data-suffix="">24</div><div class="stat-label">Premium Brands</div></div>
+  <div class="stat"><div class="stat-num" data-target="98" data-suffix="%">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+</div>
+
+<!-- ══ CATEGORIES ══ -->
+<section id="categories">
+  <div class="section-header reveal">
+    <span class="section-tag">Browse by Category</span>
+    <h2 class="section-title">Find Your Style</h2>
+    <div class="red-line"></div>
+  </div>
+  <div class="filter-bar reveal">
+    <button class="filter-btn active" onclick="filterCats('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCats('suv',this)">SUV</button>
+    <button class="filter-btn" onclick="filterCats('sports',this)">Sports</button>
+    <button class="filter-btn" onclick="filterCats('family',this)">Family</button>
+    <button class="filter-btn" onclick="filterCats('electric',this)">Electric</button>
+    <button class="filter-btn" onclick="filterCats('luxury',this)">Luxury</button>
+    <button class="filter-btn" onclick="filterCats('sedan',this)">Sedan</button>
+    <button class="filter-btn" onclick="filterCats('truck',this)">Trucks</button>
+  </div>
+  <div class="categories" id="catGrid">
+
+    <div class="cat-card wide reveal" data-cat="suv">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1625231338983-6b9a2d5b16a7?w=900&q=80" alt="SUV" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Bestseller</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">SUV</div>
+        <div class="cat-desc">Commanding presence. Superior capability. Built for every terrain and every adventure your life demands.</div>
+        <div class="cat-footer"><span class="cat-num">128 Models Available</span><button class="cat-btn" onclick="scrollToFeatured();showToast('🚙 Filtering SUVs...')">Browse SUVs →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card reveal" data-cat="sports">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=700&q=80" alt="Sports" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Performance</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Sports</div>
+        <div class="cat-desc">Pure adrenaline. Zero compromise on speed, handling, and style.</div>
+        <div class="cat-footer"><span class="cat-num">74 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('🏎️ Sports cars loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card reveal" data-cat="family">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?w=700&q=80" alt="Family" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Family</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Family</div>
+        <div class="cat-desc">Space, safety, and comfort for every journey. The perfect companion for life's best moments.</div>
+        <div class="cat-footer"><span class="cat-num">96 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('👨‍👩‍👧 Family cars loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card reveal" data-cat="electric">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=700&q=80" alt="Electric" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Future</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Electric</div>
+        <div class="cat-desc">Silent. Powerful. Sustainable. Drive the future today.</div>
+        <div class="cat-footer"><span class="cat-num">52 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('⚡ Electric fleet loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card reveal" data-cat="luxury">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1563720223809-b8a852db33c6?w=700&q=80" alt="Luxury" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Luxury</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Luxury</div>
+        <div class="cat-desc">Crafted for those who demand excellence in every detail. Premium beyond expectations.</div>
+        <div class="cat-footer"><span class="cat-num">60 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('💎 Luxury fleet loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card wide reveal" data-cat="truck">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80" alt="Trucks" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Heavy Duty</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Trucks & Pickup</div>
+        <div class="cat-desc">Power that works as hard as you do. Engineered for strength, built for real life.</div>
+        <div class="cat-footer"><span class="cat-num">40 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('🛻 Trucks loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+    <div class="cat-card reveal" data-cat="sedan">
+      <div class="cat-img-wrap">
+        <img src="https://images.unsplash.com/photo-1541443131876-96c1e5d31f7f?w=700&q=80" alt="Sedan" loading="lazy"/>
+        <div class="cat-overlay"></div><span class="cat-badge">Classic</span>
+      </div>
+      <div class="cat-info">
+        <div class="cat-label">Sedan</div>
+        <div class="cat-desc">Timeless elegance meets everyday practicality. The enduring classic, reimagined.</div>
+        <div class="cat-footer"><span class="cat-num">85 Models</span><button class="cat-btn" onclick="scrollToFeatured();showToast('🚗 Sedans loaded...')">Browse →</button></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FEATURED ══ -->
+<section id="featured">
+  <div class="section-header reveal">
+    <span class="section-tag">Editor's Choice</span>
+    <h2 class="section-title">Featured Models</h2>
+    <div class="red-line"></div>
+  </div>
+  <div class="featured-grid">
+
+    <div class="feat-card reveal">
+      <div class="feat-img-wrap">
+        <img class="feat-img" src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80" alt="Porsche 911"/>
+        <span class="feat-tag">Sports</span>
+      </div>
+      <div class="feat-brand">Porsche</div>
+      <div class="feat-name">911 Carrera S</div>
+      <div class="feat-price">₹1,60,00,000</div>
+      <div class="feat-specs">
+        <div class="feat-spec"><strong>450</strong>bhp</div>
+        <div class="feat-spec"><strong>3.8s</strong>0–100</div>
+        <div class="feat-spec"><strong>310</strong>km/h</div>
+      </div>
+      <div class="feat-actions">
+        <button class="btn-view-det" onclick="openCarModal('porsche')">View Details</button>
+        <button class="btn-buy-now" onclick="openModal('enquiry','Porsche 911 Carrera S')">Buy Now</button>
+      </div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-img-wrap">
+        <img class="feat-img" src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80" alt="BMW M5"/>
+        <span class="feat-tag">Sedan</span>
+      </div>
+      <div class="feat-brand">BMW</div>
+      <div class="feat-name">M5 Competition</div>
+      <div class="feat-price">₹1,35,00,000</div>
+      <div class="feat-specs">
+        <div class="feat-spec"><strong>625</strong>bhp</div>
+        <div class="feat-spec"><strong>3.3s</strong>0–100</div>
+        <div class="feat-spec"><strong>305</strong>km/h</div>
+      </div>
+      <div class="feat-actions">
+        <button class="btn-view-det" onclick="openCarModal('bmw')">View Details</button>
+        <button class="btn-buy-now" onclick="openModal('enquiry','BMW M5 Competition')">Buy Now</button>
+      </div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-img-wrap">
+        <img class="feat-img" src="https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=600&q=80" alt="Mercedes GLE"/>
+        <span class="feat-tag">SUV</span>
+      </div>
+      <div class="feat-brand">Mercedes-Benz</div>
+      <div class="feat-name">GLE 450 AMG</div>
+      <div class="feat-price">₹90,00,000</div>
+      <div class="feat-specs">
+        <div class="feat-spec"><strong>367</strong>bhp</div>
+        <div class="feat-spec"><strong>5.7s</strong>0–100</div>
+        <div class="feat-spec"><strong>250</strong>km/h</div>
+      </div>
+      <div class="feat-actions">
+        <button class="btn-view-det" onclick="openCarModal('merc')">View Details</button>
+        <button class="btn-buy-now" onclick="openModal('enquiry','Mercedes GLE 450 AMG')">Buy Now</button>
+      </div>
+    </div>
+
+    <div class="feat-card reveal">
+      <div class="feat-img-wrap">
+        <img class="feat-img" src="https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&q=80" alt="Tesla Model S"/>
+        <span class="feat-tag">Electric</span>
+      </div>
+      <div class="feat-brand">Tesla</div>
+      <div class="feat-name">Model S Plaid</div>
+      <div class="feat-price">₹1,20,00,000</div>
+      <div class="feat-specs">
+        <div class="feat-spec"><strong>1020</strong>bhp</div>
+        <div class="feat-spec"><strong>2.1s</strong>0–100</div>
+        <div class="feat-spec"><strong>322</strong>km/h</div>
+      </div>
+      <div class="feat-actions">
+        <button class="btn-view-det" onclick="openCarModal('tesla')">View Details</button>
+        <button class="btn-buy-now" onclick="openModal('enquiry','Tesla Model S Plaid')">Buy Now</button>
+      </div>
+    </div>
+
+  </div>
+  <div style="text-align:center;padding:3rem 0 0;">
+    <a href="#" class="btn-ghost" onclick="showToast('📂 Loading full inventory of 500+ cars...');return false;">See All 500+ Models &nbsp;→</a>
+  </div>
+</section>
+
+<!-- ══ BRANDS ══ -->
+<div id="brands">
+  <div class="brands-track">
+    <span class="brand-name">PORSCHE</span><span class="brand-sep">✦</span>
+    <span class="brand-name">BMW</span><span class="brand-sep">✦</span>
+    <span class="brand-name">MERCEDES</span><span class="brand-sep">✦</span>
+    <span class="brand-name">TESLA</span><span class="brand-sep">✦</span>
+    <span class="brand-name">AUDI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">FERRARI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">LAMBORGHINI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">RANGE ROVER</span><span class="brand-sep">✦</span>
+    <span class="brand-name">LEXUS</span><span class="brand-sep">✦</span>
+    <span class="brand-name">MASERATI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">PORSCHE</span><span class="brand-sep">✦</span>
+    <span class="brand-name">BMW</span><span class="brand-sep">✦</span>
+    <span class="brand-name">MERCEDES</span><span class="brand-sep">✦</span>
+    <span class="brand-name">TESLA</span><span class="brand-sep">✦</span>
+    <span class="brand-name">AUDI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">FERRARI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">LAMBORGHINI</span><span class="brand-sep">✦</span>
+    <span class="brand-name">RANGE ROVER</span><span class="brand-sep">✦</span>
+    <span class="brand-name">LEXUS</span><span class="brand-sep">✦</span>
+    <span class="brand-name">MASERATI</span><span class="brand-sep">✦</span>
+  </div>
+</div>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <span class="section-tag">Customer Stories</span>
+    <h2 class="section-title">What Owners Say</h2>
+    <div class="red-line"></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <div class="testi-text">AutoElite made the whole process effortless. I walked in not knowing what I wanted and drove out in my dream Porsche the same day. Unmatched service.</div>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="Rahul"/>
+        <div><div class="testi-name">Rahul Mehta</div><div class="testi-car">Porsche 911 Carrera S</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <div class="testi-text">The finance team got me the best EMI deal I could find anywhere. Transparent, fast, and genuinely helpful. I drove my Tesla home within 48 hours.</div>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="Priya"/>
+        <div><div class="testi-name">Priya Sharma</div><div class="testi-car">Tesla Model S Plaid</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <div class="testi-text">Bought a certified pre-owned BMW M5. The 200-point inspection report gave complete peace of mind. Been driving it 8 months — absolutely flawless.</div>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Arjun"/>
+        <div><div class="testi-name">Arjun Nair</div><div class="testi-car">BMW M5 Competition</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EXPERIENCE ══ -->
+<section id="experience">
+  <div class="experience-strip">
+    <div class="exp-text">
+      <div class="section-header" style="text-align:left;padding:0 0 1.5rem;">
+        <span class="section-tag">Why AutoElite</span>
+        <h2 class="section-title" style="font-size:clamp(2.5rem,4vw,4.5rem);">The Elite<br>Experience</h2>
+        <div class="red-line left"></div>
+      </div>
+      <p>We don't just sell cars — we match you to your perfect drive. From first look to final paperwork, every step is crafted for your comfort and confidence.</p>
+      <div class="exp-features">
+        <div class="exp-feat reveal">
+          <div class="exp-icon">🚗</div>
+          <div class="exp-feat-text"><strong>Personalised Test Drives</strong><span>Book anytime. We bring the car to you, or welcome you in style.</span></div>
+        </div>
+        <div class="exp-feat reveal">
+          <div class="exp-icon">💼</div>
+          <div class="exp-feat-text"><strong>Transparent Financing</strong><span>No hidden fees. Flexible EMI plans. Finance in under 24 hours.</span></div>
+        </div>
+        <div class="exp-feat reveal">
+          <div class="exp-icon">🛡️</div>
+          <div class="exp-feat-text"><strong>Certified & Warranted</strong><span>Every vehicle passes 200-point inspection. Backed by 2-year warranty.</span></div>
+        </div>
+      </div>
+      <div class="exp-actions">
+        <a href="#" class="btn-primary" onclick="openModal('testdrive');return false;">Book Test Drive</a>
+        <a href="#" class="btn-ghost" onclick="openModal('contact');return false;">Contact Us</a>
+      </div>
+    </div>
+    <div class="exp-visual reveal">
+      <img class="exp-img" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80" alt="Premium Showroom"/>
+      <div class="exp-img-deco"></div>
+      <div class="exp-badge"><div class="exp-badge-num">25+</div><div class="exp-badge-txt">Years of Excellence</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA BANNER ══ -->
+<section id="cta-banner">
+  <div class="cta-bg"></div>
+  <div class="cta-content reveal">
+    <h2>Ready to Find Your Car?</h2>
+    <p>Talk to our experts today. No pressure, just passion for finding you the perfect match.</p>
+    <div class="cta-actions">
+      <a href="#" class="btn-primary" onclick="openModal('testdrive');return false;">&#9654; Book a Test Drive</a>
+      <a href="#" class="btn-gold" onclick="openModal('contact');return false;">&#9993; Get in Touch</a>
+      <a href="#" class="btn-ghost" onclick="openModal('finance');return false;">EMI Calculator</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div>
+    <div class="footer-logo">Auto<span>Elite</span></div>
+    <div class="footer-tagline">India's premier destination for luxury and performance automobiles. Drive your dream today.</div>
+    <div class="social-links">
+      <a class="social-btn" href="#" onclick="showToast('📷 Instagram');return false;">📷</a>
+      <a class="social-btn" href="#" onclick="showToast('▶ YouTube');return false;">▶</a>
+      <a class="social-btn" href="#" onclick="showToast('💬 WhatsApp');return false;">💬</a>
+      <a class="social-btn" href="#" onclick="showToast('in LinkedIn');return false;">in</a>
+    </div>
+  </div>
+  <div class="footer-col">
+    <h4>Models</h4>
+    <ul>
+      <li><a href="#categories" onclick="filterCats('suv',null)">SUV</a></li>
+      <li><a href="#categories" onclick="filterCats('sports',null)">Sports Cars</a></li>
+      <li><a href="#categories" onclick="filterCats('family',null)">Family Cars</a></li>
+      <li><a href="#categories" onclick="filterCats('electric',null)">Electric</a></li>
+      <li><a href="#categories" onclick="filterCats('luxury',null)">Luxury</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Services</h4>
+    <ul>
+      <li><a href="#" onclick="openModal('testdrive');return false;">Test Drive</a></li>
+      <li><a href="#" onclick="openModal('finance');return false;">Finance / EMI</a></li>
+      <li><a href="#" onclick="showToast('🔄 Trade-In form coming soon...');return false;">Trade-In</a></li>
+      <li><a href="#" onclick="showToast('🔧 Service centre locator...');return false;">Service & Parts</a></li>
+      <li><a href="#" onclick="showToast('🛡️ Insurance portal...');return false;">Insurance</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <ul>
+      <li><a href="#experience">About Us</a></li>
+      <li><a href="#" onclick="showToast('📋 Careers page loading...');return false;">Careers</a></li>
+      <li><a href="#" onclick="openModal('contact');return false;">Find Showroom</a></li>
+      <li><a href="#" onclick="openModal('contact');return false;">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 AutoElite. All Rights Reserved.</span>
+  <span>
+    <a href="#" style="color:var(--muted);text-decoration:none;" onclick="showToast('📄 Privacy Policy');return false;">Privacy Policy</a>
+    &nbsp;·&nbsp;
+    <a href="#" style="color:var(--muted);text-decoration:none;" onclick="showToast('📄 Terms of Service');return false;">Terms of Service</a>
+  </span>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+
+<!-- TEST DRIVE -->
+<div class="modal-overlay" id="modal-testdrive">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('testdrive')">✕</button>
+    <img class="modal-img" src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=720&q=80" alt="Test Drive"/>
+    <div class="modal-body">
+      <div class="modal-brand">AutoElite Services</div>
+      <div class="modal-name">Book a Test Drive</div>
+      <div class="modal-desc">Select your preferred car and time. Our team confirms your booking within 2 hours.</div>
+      <div class="field-grid">
+        <div><label class="field-label">Your Name</label><input class="field-input" type="text" placeholder="Rahul Mehta"/></div>
+        <div><label class="field-label">Phone</label><input class="field-input" type="text" placeholder="+91 9999 000000"/></div>
+        <div>
+          <label class="field-label">Car of Interest</label>
+          <select class="field-input">
+            <option>Porsche 911 Carrera S</option>
+            <option>BMW M5 Competition</option>
+            <option>Mercedes GLE 450 AMG</option>
+            <option>Tesla Model S Plaid</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div><label class="field-label">Preferred Date</label><input class="field-input" type="date"/></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="submitForm('Test Drive booking')">✓ Confirm Booking</button>
+        <button class="btn-ghost btn-sm" onclick="closeModal('testdrive')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENQUIRY / BUY NOW -->
+<div class="modal-overlay" id="modal-enquiry">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('enquiry')">✕</button>
+    <div class="modal-body" style="padding-top:2.5rem;">
+      <div class="modal-brand">Purchase Enquiry</div>
+      <div class="modal-name" id="enquiry-car-name">Make an Offer</div>
+      <div class="modal-desc">Our sales team will reach out within 30 minutes with a personalised quote.</div>
+      <div class="field-grid">
+        <div><label class="field-label">Full Name</label><input class="field-input" type="text" placeholder="Your Name"/></div>
+        <div><label class="field-label">Email</label><input class="field-input" type="email" placeholder="you@email.com"/></div>
+        <div><label class="field-label">Phone</label><input class="field-input" type="text" placeholder="+91 9999 000000"/></div>
+        <div>
+          <label class="field-label">Budget Range</label>
+          <select class="field-input">
+            <option>Under ₹50 Lakh</option>
+            <option>₹50L – ₹1 Cr</option>
+            <option>₹1 Cr – ₹2 Cr</option>
+            <option>₹2 Cr+</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="submitForm('Purchase Enquiry')">Send Enquiry →</button>
+        <button class="btn-ghost btn-sm" onclick="openModal('finance')">EMI Calc</button>
+        <button class="btn-ghost btn-sm" onclick="closeModal('enquiry')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINANCE / EMI -->
+<div class="modal-overlay" id="modal-finance">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('finance')">✕</button>
+    <div class="modal-body" style="padding-top:2.5rem;">
+      <div class="modal-brand">AutoElite Finance</div>
+      <div class="modal-name">EMI Calculator</div>
+      <div class="modal-desc">Estimate your monthly payments instantly — no obligations.</div>
+      <div class="field-grid">
+        <div><label class="field-label">Car Price (₹)</label><input class="field-input" id="emi-price" type="number" value="9000000" oninput="calcEMI()"/></div>
+        <div><label class="field-label">Down Payment (₹)</label><input class="field-input" id="emi-down" type="number" value="1800000" oninput="calcEMI()"/></div>
+        <div><label class="field-label">Interest Rate (% p.a.)</label><input class="field-input" id="emi-rate" type="number" value="8.5" step="0.1" oninput="calcEMI()"/></div>
+        <div>
+          <label class="field-label">Tenure</label>
+          <select class="field-input" id="emi-tenure" oninput="calcEMI()">
+            <option value="12">12 Months</option>
+            <option value="24">24 Months</option>
+            <option value="36" selected>36 Months</option>
+            <option value="48">48 Months</option>
+            <option value="60">60 Months</option>
+            <option value="72">72 Months</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:var(--mid);border:1px solid var(--border);padding:1.5rem;margin-top:1.5rem;text-align:center;">
+        <div style="font-size:0.62rem;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.5rem;">Monthly EMI</div>
+        <div id="emi-result" style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);letter-spacing:0.04em;">₹0</div>
+        <div id="emi-total" style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="submitForm('Finance Application')">Apply for Finance →</button>
+        <button class="btn-ghost btn-sm" onclick="closeModal('finance')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('contact')">✕</button>
+    <div class="modal-body" style="padding-top:2.5rem;">
+      <div class="modal-brand">AutoElite</div>
+      <div class="modal-name">Get in Touch</div>
+      <div class="modal-desc">We're available Mon–Sat, 9am–8pm. Or drop us a message anytime.</div>
+      <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+        <div><label class="field-label">Name</label><input class="field-input" type="text" placeholder="Your Name"/></div>
+        <div><label class="field-label">Message</label><textarea class="field-input" rows="4" placeholder="How can we help you?" style="resize:vertical;"></textarea></div>
+      </div>
+      <div style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+        <div style="background:var(--mid);border:1px solid var(--border);padding:1rem;text-align:center;">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">📞</div>
+          <div style="font-size:0.7rem;color:var(--muted);">+91 99990 12345</div>
+        </div>
+        <div style="background:var(--mid);border:1px solid var(--border);padding:1rem;text-align:center;">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">✉️</div>
+          <div style="font-size:0.7rem;color:var(--muted);">hello@autoelite.in</div>
+        </div>
+        <div style="background:var(--mid);border:1px solid var(--border);padding:1rem;text-align:center;">
+          <div style="font-size:1.2rem;margin-bottom:0.4rem;">📍</div>
+          <div style="font-size:0.7rem;color:var(--muted);">Banjara Hills, Hyd</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="submitForm('Message')">Send Message →</button>
+        <button class="btn-ghost btn-sm" onclick="closeModal('contact')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CAR DETAIL -->
+<div class="modal-overlay" id="modal-car">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('car')">✕</button>
+    <img class="modal-img" id="car-modal-img" src="" alt="Car Detail"/>
+    <div class="modal-body">
+      <div class="modal-brand" id="car-modal-brand"></div>
+      <div class="modal-name" id="car-modal-name"></div>
+      <div class="modal-price" id="car-modal-price"></div>
+      <div class="modal-desc" id="car-modal-desc"></div>
+      <div class="modal-specs-grid" id="car-modal-specs"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="car-modal-buy">Buy Now</button>
+        <button class="btn-ghost" onclick="closeModal('car');openModal('testdrive')">Book Test Drive</button>
+        <button class="btn-ghost btn-sm" onclick="closeModal('car');openModal('finance')">EMI Calculator</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+// Cursor
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function tick(){cursor.style.left=(mx-6)+'px';cursor.style.top=(my-6)+'px';rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=(rx-18)+'px';ring.style.top=(ry-18)+'px';requestAnimationFrame(tick);})();
+
+// Scroll Reveal
+const obs=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);obs.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+
+// Stats counter
+const sObs=new IntersectionObserver(es=>{if(es[0].isIntersecting){document.querySelectorAll('.stat-num').forEach(el=>{const t=+el.dataset.target,s=el.dataset.suffix;let v=0;const step=t/60;const tmr=setInterval(()=>{v=Math.min(v+step,t);el.textContent=Math.floor(v)+s;if(v>=t)clearInterval(tmr);},20);});sObs.disconnect();}},{threshold:0.5});
+sObs.observe(document.querySelector('.stats-bar'));
+
+// Toast
+let tTimer;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tTimer);tTimer=setTimeout(()=>t.classList.remove('show'),2800);}
+
+// Modals
+function openModal(id,extra=''){
+  closeAllModals();
+  if(id==='enquiry'&&extra)document.getElementById('enquiry-car-name').textContent=extra;
+  document.getElementById('modal-'+id).classList.add('open');
+  if(id==='finance')calcEMI();
+}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAllModals();});
+
+// Car data
+const cars={
+  porsche:{brand:'Porsche',name:'911 Carrera S',price:'₹1,60,00,000',img:'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=720&q=80',desc:'The iconic 911 Carrera S — a flat-six symphony of engineering. Every curve is functional, every control precise. The benchmark against which all sports cars are measured. Available in RWD and 4S AWD variants.',specs:[{v:'450',l:'BHP'},{v:'3.8s',l:'0–100 km/h'},{v:'310',l:'Top Speed km/h'},{v:'3.0L',l:'Flat-Six Engine'},{v:'8-Spd',l:'PDK Gearbox'},{v:'1,515',l:'Weight (kg)'}]},
+  bmw:{brand:'BMW',name:'M5 Competition',price:'₹1,35,00,000',img:'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=720&q=80',desc:'M5 Competition blurs the line between daily driver and race car. 625 horses, a hand-built twin-turbo V8, and the legendary M xDrive AWD system for supreme control in any condition.',specs:[{v:'625',l:'BHP'},{v:'3.3s',l:'0–100 km/h'},{v:'305',l:'Top Speed km/h'},{v:'4.4L',l:'V8 TwinTurbo'},{v:'8-Spd',l:'M Steptronic'},{v:'1,900',l:'Weight (kg)'}]},
+  merc:{brand:'Mercedes-Benz',name:'GLE 450 AMG',price:'₹90,00,000',img:'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=720&q=80',desc:'The GLE 450 AMG combines the commanding presence of a luxury SUV with AMG-tuned performance and the famous Mercedes-Benz interior quality. A refined powerhouse for all roads.',specs:[{v:'367',l:'BHP'},{v:'5.7s',l:'0–100 km/h'},{v:'250',l:'Top Speed km/h'},{v:'3.0L',l:'I6 EQ Boost'},{v:'9G',l:'9-Spd Auto'},{v:'4MATIC',l:'All Wheel Drive'}]},
+  tesla:{brand:'Tesla',name:'Model S Plaid',price:'₹1,20,00,000',img:'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=720&q=80',desc:'The fastest production sedan ever made. Three electric motors, 1020 hp, and a 0–100 sprint that no petrol car can match. Over-the-air updates keep it ahead of the competition forever.',specs:[{v:'1020',l:'BHP'},{v:'2.1s',l:'0–100 km/h'},{v:'322',l:'Top Speed km/h'},{v:'Tri',l:'3 Motors'},{v:'637',l:'Range (km)'},{v:'100%',l:'Electric'}]}
+};
+function openCarModal(id){
+  const c=cars[id];
+  document.getElementById('car-modal-img').src=c.img;
+  document.getElementById('car-modal-brand').textContent=c.brand;
+  document.getElementById('car-modal-name').textContent=c.name;
+  document.getElementById('car-modal-price').textContent=c.price;
+  document.getElementById('car-modal-desc').textContent=c.desc;
+  document.getElementById('car-modal-specs').innerHTML=c.specs.map(s=>`<div class="modal-spec"><strong>${s.v}</strong><span>${s.l}</span></div>`).join('');
+  document.getElementById('car-modal-buy').onclick=()=>openModal('enquiry',c.brand+' '+c.name);
+  closeAllModals();
+  document.getElementById('modal-car').classList.add('open');
+}
+
+// Category filter
+function filterCats(cat,btn){
+  if(btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  document.querySelectorAll('.cat-card').forEach(c=>{
+    const show=cat==='all'||c.dataset.cat===cat;
+    c.style.transition='opacity 0.3s,transform 0.4s';
+    if(show){c.style.display='';setTimeout(()=>{c.style.opacity='1';c.style.transform='';},10);}
+    else{c.style.opacity='0';setTimeout(()=>c.style.display='none',300);}
+  });
+  const suv=document.querySelector('[data-cat="suv"]'),truck=document.querySelector('[data-cat="truck"]');
+  if(cat==='all'){suv&&suv.classList.add('wide');truck&&truck.classList.add('wide');}
+  else{document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('wide'));}
+}
+
+// EMI Calculator
+function calcEMI(){
+  const P=parseFloat(document.getElementById('emi-price').value||0)-parseFloat(document.getElementById('emi-down').value||0);
+  const r=parseFloat(document.getElementById('emi-rate').value||0)/12/100;
+  const n=parseInt(document.getElementById('emi-tenure').value||36);
+  if(P<=0||r<=0){document.getElementById('emi-result').textContent='₹0';return;}
+  const emi=P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  const total=emi*n;
+  document.getElementById('emi-result').textContent='₹'+Math.round(emi).toLocaleString('en-IN');
+  document.getElementById('emi-total').textContent='Total payable: ₹'+Math.round(total).toLocaleString('en-IN')+' · Interest: ₹'+Math.round(total-P).toLocaleString('en-IN');
+}
+
+// Scroll helper
+function scrollToFeatured(){window.scrollTo({top:document.getElementById('featured').offsetTop,behavior:'smooth'});}
+
+// Form submit
+function submitForm(type){showToast('✅ '+type+' submitted! We\'ll reach out shortly.');closeAllModals();}
+</script>
+</body>
+</html>
